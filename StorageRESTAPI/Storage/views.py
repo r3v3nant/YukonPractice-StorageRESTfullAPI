@@ -67,14 +67,14 @@ def login_user(request):
 
 @swagger_auto_schema(
     method='post',
-    operation_description="Logout the user and return a JSON response",
-    responses={200: "Logged out successfully", 401: "Unauthorized"}
+    operation_description="Logout the user and redirect to the main page",
+    responses={302: "Redirect to main page", 401: "Unauthorized"}
 )
-@api_view(["POST"])
+@api_view(["GET", "POST"])
 @permission_classes([IsAuthenticated])
 def logout_user(request):
     logout(request)
-    return Response({"message": "Logged out successfully"}, status=200)
+    return redirect('main')
 
 class HomePageView(TemplateView):
     template_name = 'index.html'
