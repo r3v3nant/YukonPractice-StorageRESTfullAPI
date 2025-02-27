@@ -43,8 +43,8 @@ from rest_framework.response import Response
     ),
     responses={200: "Success", 400: "Invalid credentials"}
 )
-@api_view(["GET", "POST"])
-@permission_classes([AllowAny])  # Дозволяє доступ без авторизації
+@api_view(["GET", "POST"])  # Додаємо GET для відкриття сторінки, POST для роботи з формою
+@permission_classes([AllowAny])
 def login_user(request):
     if request.method == "POST":
         userlogin = request.POST.get("login")
@@ -62,7 +62,7 @@ def login_user(request):
             messages.error(request, "Невірний логін або пароль")
             return redirect("login")
 
-    # Якщо GET-запит – відображаємо сторінку входу
+    # GET-запит – відображає сторінку входу
     return render(request, "login.html")
 
 @swagger_auto_schema(
@@ -73,9 +73,6 @@ def login_user(request):
 @api_view(["POST"])
 @permission_classes([IsAuthenticated])
 def logout_user(request):
-    """
-    Logout the authenticated user and return JSON response.
-    """
     logout(request)
     return Response({"message": "Logged out successfully"}, status=200)
 
@@ -101,7 +98,7 @@ def showProdCategoryView(request):
     ),
     responses={201: "Category created", 400: "Invalid data"}
 )
-@api_view(["GET", "POST"])  # Додаємо GET для відкриття сторінки
+@api_view(["GET", "POST"])  # Додаємо GET для відкриття сторінки, POST для роботи з формою
 @permission_classes([IsAuthenticated])
 def create_prodcategory(request):
     if request.method == "POST":
@@ -112,7 +109,7 @@ def create_prodcategory(request):
         else:
             return render(request, 'createProductscategories.html', {'form': form, 'error': "Invalid data"})
 
-    # Повертаємо порожню форму при GET-запиті
+    # GET-запит – відображає сторінку та форму
     form = ProdCategoryForm()
     return render(request, 'createProductscategories.html', {'form': form})
 
@@ -122,7 +119,7 @@ def create_prodcategory(request):
     operation_description="Get details of a specific product category",
     responses={200: "Category details", 404: "Category not found"}
 )
-@api_view(["GET"])
+@api_view(["GET"])# Додаємо GET для відкриття сторінки
 @permission_classes([IsAuthenticated])
 def prodcategory_detail(request, pk):
     category = get_object_or_404(ProdCategories, pk=pk)
@@ -130,7 +127,7 @@ def prodcategory_detail(request, pk):
 
 
 @swagger_auto_schema(
-    method='post',  # Використовуємо POST замість PUT для форм
+    method='post',
     operation_description="Update an existing product category",
     request_body=openapi.Schema(
         type=openapi.TYPE_OBJECT,
@@ -141,7 +138,7 @@ def prodcategory_detail(request, pk):
     ),
     responses={200: "Category updated", 400: "Invalid data", 404: "Category not found"}
 )
-@api_view(["GET", "POST"])  # Додаємо GET для відкриття сторінки
+@api_view(["GET", "POST"])  # Додаємо GET для відкриття сторінки, POST для роботи з формою
 @permission_classes([IsAuthenticated])
 def prodcategory_update(request, pk):
     category = get_object_or_404(ProdCategories, pk=pk)
@@ -164,29 +161,26 @@ def prodcategory_update(request, pk):
     operation_description="Delete a product category",
     responses={204: "Category deleted", 404: "Category not found"}
 )
-@api_view(["GET", "POST"])  # Додаємо GET для відображення сторінки
+@api_view(["GET", "POST"])  # Додаємо GET для відкриття сторінки, POST для видалення
 @permission_classes([IsAuthenticated])
 def delete_prodcategory(request, pk):
     category = get_object_or_404(ProdCategories, pk=pk)
 
-    if request.method == "POST":  # Використовуємо POST для видалення
+    if request.method == "POST":
         category.delete()
-        return redirect('categories')  # Після видалення перенаправляємо на список категорій
+        return redirect('categories')  # Після видалення перенаправляємо на сторінку категорій
 
-    # Якщо GET-запит – відкриваємо сторінку підтвердження видалення
     return render(request, 'deleteProductscategories.html', {'category': category})
 
 
 
 @permission_classes([IsAuthenticated])
-def showProductView(request):
-    # products = Products.objects.all()
-    # return render(request, 'products.html', {'products': products})
+def showProductView(request): # Сторінка продуктів
 
     products = Products.objects.all()
     form = ProductFilterForm(request.GET)
 
-    if form.is_valid():
+    if form.is_valid():     # Форма-фільтр
         search_query = form.cleaned_data.get("search")
         if search_query:
             products = products.filter(name__icontains=search_query)
@@ -213,7 +207,7 @@ def showProductView(request):
     ),
     responses={201: "Product created", 400: "Invalid data"}
 )
-@api_view(["GET", "POST"])  # Додаємо GET для відкриття сторінки
+@api_view(["GET", "POST"])  # Додаємо GET для відкриття сторінки, POST для роботи з формою
 @permission_classes([IsAuthenticated])
 def create_product(request):
     if request.method == "POST":
@@ -237,7 +231,7 @@ def create_product(request):
     operation_description="Retrieve a product by ID",
     responses={200: "Product details", 404: "Product not found"}
 )
-@api_view(["GET"])
+@api_view(["GET"])  # Додаємо GET для відкриття сторінки
 @permission_classes([IsAuthenticated])
 def product_detail(request, product_id):
     product = get_object_or_404(Products, id=product_id)
@@ -261,12 +255,12 @@ def product_detail(request, product_id):
     ),
     responses={200: "Product updated", 403: "Not authorized", 404: "Product not found"}
 )
-@api_view(["GET", "POST"])  # Додаємо GET для відкриття сторінки
+@api_view(["GET", "POST"])  # Додаємо GET для відкриття сторінки, POST для роботи з формою
 @permission_classes([IsAuthenticated])
 def product_update(request, product_id):
     product = get_object_or_404(Products, id=product_id)
 
-    if product.created_by != request.user:
+    if product.created_by != request.user: # Якщо інший користувач створив продукт, то переадресовуємо його на сторінку перегляду продукту
         messages.error(request, "You can’t modify this product!")
         return redirect('readproduct', product_id=product.id)
 
@@ -288,7 +282,7 @@ def product_update(request, product_id):
     operation_description="Delete a product",
     responses={204: "Product deleted", 403: "Not authorized", 404: "Product not found"}
 )
-@api_view(["GET", "POST"])  # Додаємо GET для відкриття сторінки
+@api_view(["GET", "POST"])  # Додаємо GET для відкриття сторінки, POST для видалення
 @permission_classes([IsAuthenticated])
 def delete_product(request, product_id):
     product = get_object_or_404(Products, id=product_id)
@@ -301,4 +295,5 @@ def delete_product(request, product_id):
         product.delete()
         return redirect('products')
 
+    # GET-запит – відкриває сторінку підтвердження видалення
     return render(request, 'deleteProduct.html', {'product': product})

@@ -17,7 +17,7 @@ import os
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 
-
+# Створення шляху для картинок
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
@@ -46,9 +46,9 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'StorageRESTAPI.Storage',
-    'rest_framework',
-    'drf_yasg',
+    'StorageRESTAPI.Storage',       # Підключення програми
+    'rest_framework',               # Підключення DjangoRESTFramework
+    'drf_yasg',                     # Підключення Swagger
 ]
 
 MIDDLEWARE = [

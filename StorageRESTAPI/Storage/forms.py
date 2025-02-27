@@ -2,7 +2,7 @@ from django import forms
 from .models import Products, ProdCategories
 from PIL import Image
 
-class ProductForm(forms.ModelForm):
+class ProductForm(forms.ModelForm): # Форма для продукту
     class Meta:
         model = Products
         fields = ['name', 'category', 'image', 'preview']
@@ -29,7 +29,7 @@ class ProductForm(forms.ModelForm):
                 raise forms.ValidationError("Max size is 100x100 pixels!")
         return preview
 
-class ProductFilterForm(forms.Form):
+class ProductFilterForm(forms.Form):    # Форма для фільтрів
     search = forms.CharField(
         required=False,
         label="Find Product",
@@ -42,7 +42,7 @@ class ProductFilterForm(forms.Form):
         empty_label="Categories"
     )
 
-class ProdCategoryForm(forms.ModelForm):
+class ProdCategoryForm(forms.ModelForm): # Форма для категорії
     class Meta:
         model = ProdCategories
         fields = ['name']
