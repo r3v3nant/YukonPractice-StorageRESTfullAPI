@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+{% spaceless %}
+    <a href="{% url 'createproduct' %}">Create New</a>
+    <h2>Products</h2>
+    <ul>
+        {% for product in products %}
+            <li>
+                <strong>{{ product.name }}</strong> (Category: {{ product.category.name }})<br>
+                <em>Created by: {{ product.created_by.username }}</em><br>
+                {% if product.preview %}
+                    <img src="{{ product.preview.url }}" alt="{{ product.name }}" width="100">
+                {% endif %}
+                <br>
+                <a href="{% url 'updateproduct' product.id %}">Edit</a>
+                <br>
+                <a href="{% url 'deleteproduct' product.id %}">Delete</a>
+            </li>
+        {% empty %}
+            <li>Storage is empty</li>
+        {% endfor %}
+    </ul>
+
+{% endspaceless %}
+{% endblock %}

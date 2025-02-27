@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+{% spaceless %}
+
+
+    <h2>Products Categories</h2>
+    <a href="{% url 'createcategory' %}">Create New</a>
+
+    <ul>
+        {% for category in categories %}
+        <li>
+            <strong>{{ category.name }}</strong>
+            <a href="{% url 'createcategory' category.pk %}">Read</a>
+            | <a href="{% url 'updatecategory' category.pk %}">Edit</a>
+            | <a href="{% url 'deletecategory' category.pk %}">Delete</a>
+        </li>
+        {% endfor %}
+    </ul>
+
+{% endspaceless %}
+{% endblock %}

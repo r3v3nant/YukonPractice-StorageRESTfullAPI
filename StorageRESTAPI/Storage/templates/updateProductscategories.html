@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+{% spaceless %}
+
+
+    <h1>{{ category.name }}</h1>
+
+    <form method="POST">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Update</button>
+    </form>
+
+    <a href="{% url 'categories' %}">Return</a>
+
+{% endspaceless %}
+{% endblock %}

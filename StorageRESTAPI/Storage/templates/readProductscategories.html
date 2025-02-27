@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+{% spaceless %}
+
+
+    <h1>{{ category.name }}</h1>
+    <br><a href="{% url 'updatecategory' category.pk %}">Edit</a>
+    <br><a href="{% url 'categories' %}">Return</a>
+
+{% endspaceless %}
+{% endblock %}
