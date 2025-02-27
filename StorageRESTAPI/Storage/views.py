@@ -6,7 +6,7 @@ from django.contrib.auth.decorators import login_required
 
 # from django.contrib.auth.models import User
 from .models import ProdCategories, Products
-from .forms import ProductForm, ProdCategoryForm
+from .forms import ProductForm, ProdCategoryForm, ProductFilterForm
 
 # from .permissions import IsOwnerOrReadOnly
 # from rest_framework import permissions, viewsets
@@ -80,8 +80,22 @@ def delete_prodcategory(request, pk):
 
 @login_required
 def showProductView(request):
+    # products = Products.objects.all()
+    # return render(request, 'products.html', {'products': products})
+
     products = Products.objects.all()
-    return render(request, 'products.html', {'products': products})
+    form = ProductFilterForm(request.GET)
+
+    if form.is_valid():
+        search_query = form.cleaned_data.get("search")
+        if search_query:
+            products = products.filter(name__icontains=search_query)
+
+        category = form.cleaned_data.get("category")
+        if category:
+            products = products.filter(category=category)
+
+    return render(request, "products.html", {"products": products, "form": form})
 
 @login_required
 #CREATE (Створення нового продукту)
@@ -108,7 +122,6 @@ def product_detail(request, product_id):
         messages.success(request, ("Product is no longer valid!"))
         return redirect('products')
     form = ProductForm(instance=product)
-    messages.success(request, ("You can`t modify that product!"))
     return render(request, 'readProduct.html', {'form': form, 'product': product})
 
 

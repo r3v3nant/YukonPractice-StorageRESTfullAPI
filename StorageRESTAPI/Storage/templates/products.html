@@ -4,6 +4,11 @@
 {% spaceless %}
     <a href="{% url 'createproduct' %}">Create New</a>
     <h2>Products</h2>
+     <form method="GET">
+        {{ form.as_p }}
+        <button type="submit">Find</button>
+    </form>
+
     <ul>
         {% for product in products %}
             <li>
@@ -21,6 +26,7 @@
             <li>Storage is empty</li>
         {% endfor %}
     </ul>
+
 
 {% endspaceless %}
 {% endblock %}

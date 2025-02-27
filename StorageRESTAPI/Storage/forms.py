@@ -29,6 +29,19 @@ class ProductForm(forms.ModelForm):
                 raise forms.ValidationError("Max size is 100x100 pixels!")
         return preview
 
+class ProductFilterForm(forms.Form):
+    search = forms.CharField(
+        required=False,
+        label="Find Product",
+        widget=forms.TextInput(attrs={"placeholder": "Input product name..."})
+    )
+    category = forms.ModelChoiceField(
+        queryset=ProdCategories.objects.all(),
+        required=False,
+        label="Category",
+        empty_label="Categories"
+    )
+
 class ProdCategoryForm(forms.ModelForm):
     class Meta:
         model = ProdCategories
